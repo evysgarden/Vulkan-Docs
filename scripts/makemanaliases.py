@@ -45,8 +45,8 @@ if __name__ == '__main__':
             # attempts to alias them will fail. Silently skip them.
             continue
 
-        alias = key + '.html'
-        src = api.alias[key] + '.html'
+        alias = f"{key}.html"
+        src = f"{api.alias[key]}.html"
         if args.man3:
             alias = key + '.3'
             src = api.alias[key] + '.3'
@@ -63,7 +63,7 @@ if __name__ == '__main__':
             # problem, so do not fail, but it should be checked out.
             # The usual case for this is not cleaning the target directory
             # prior to generating refpages.
-            print('Unexpected alias file "' + alias + '" exists, skipping',
+            print(f"Unexpected alias file \"{alias}\" exists, skipping",
                   file=sys.stderr)
         else:
             # Create link from alias refpage to page for what it is aliasing
