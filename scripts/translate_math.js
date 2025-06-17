@@ -7,7 +7,6 @@
 
 const katex = require(process.argv[2]);
 const fs = require("fs");
-const escapeRegex = require("escape-string-regexp");
 const he = require('he');
 
 const filepath = process.argv[3];
@@ -22,7 +21,7 @@ const delimiters = [
                    ]
 
 for( var delim of delimiters ) {
-    const regex = new RegExp( escapeRegex(delim.left) + "([\\S\\s]*?)" + escapeRegex(delim.right), "g");
+    const regex = new RegExp( RegExp.escape(delim.left) + "([\\S\\s]*?)" + RegExp.escape(delim.right), "g");
     html = html.replace( regex,
         function(match, g1) {
             return katex.renderToString( he.decode(g1, {'strict': true}), {displayMode: delim.display, output: 'html', strict: true} );
