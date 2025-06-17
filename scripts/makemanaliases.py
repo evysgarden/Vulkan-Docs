@@ -20,6 +20,8 @@ if __name__ == '__main__':
                         required=True,
                         help='Path to directory containing reference pages to symlink')
 
+    parser.add_argument('-man3', action='store_true', default=False, help='Set to true when dealing with man3 pages')
+
     args = parser.parse_args()
 
     # Look for apimap.py in the specified directory
@@ -45,6 +47,10 @@ if __name__ == '__main__':
 
         alias = f"{key}.html"
         src = f"{api.alias[key]}.html"
+        if args.man3:
+            alias = key + '.3'
+            src = api.alias[key] + '.3'
+        
 
         if not os.access(src, os.R_OK):
             # This should not happen, but is possible if the api module is
