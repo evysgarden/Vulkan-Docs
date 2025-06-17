@@ -603,21 +603,24 @@ manhtmlpages: $(REFPATH)/apispec.adoc $(GENDEPENDS)
 	$(QUIET) echo "manhtmlpages: building HTML refpages with these options:"
 	$(QUIET) echo $(ASCIIDOC) -b html5 $(ADOCOPTS) $(ADOCHTMLOPTS) \
 	    $(ADOCREFOPTS) -d manpage -o REFPAGE.html REFPAGE.adoc
-	$(MAKE) $(SUBMAKEOPTIONS) -e buildmanpages
+	$(MAKE) $(SUBMAKEOPTIONS) -e buildmanhtmlpages
 
 man3pages: $(REFPATH)/apispec.adoc $(GENDEPENDS)
 	$(QUIET) echo "man3pages: building man3 refpages with these options:"
 	$(QUIET) echo $(ASCIIDOC) -b manpage $(ADOCOPTS) $(ADOCHTMLOPTS) \
 	    $(ADOCREFOPTS) -d manpage -o REFPAGE.html REFPAGE.adoc
-	$(MAKE) $(SUBMAKEOPTIONS) -e buildmanpages
+	$(MAKE) $(SUBMAKEOPTIONS) -e buildman3pages
 
 # Build the individual refpages, then the symbolic links from aliases
 MANHTMLDIR  = $(OUTDIR)/man/html
-MAN3DIR 	= $(OUTDIR)/man/man3
 MANHTML     = $(MANSOURCES:$(REFPATH)/%.adoc=$(MANHTMLDIR)/%.html)
+buildmanhtmlpages: $(MANHTML)
+	$(MAKE) $(SUBMAKEOPTIONS) -e manhtmlaliases
+
+MAN3DIR 	= $(OUTDIR)/man/man3
 MAN3    	= $(MANSOURCES:$(REFPATH)/%.adoc=$(MAN3DIR)/%.3)
-buildmanpages: $(MANHTML) $(MAN3)
-	$(MAKE) $(SUBMAKEOPTIONS) -e manaliases
+buildman3pages: $(MAN3)
+	$(MAKE) $(SUBMAKEOPTIONS) -e man3aliases
 
 # Asciidoctor options to build refpages
 #
@@ -684,8 +687,11 @@ $(OUTDIR)/apispec.html: $(SPECVERSION) $(REFPATH)/apispec.adoc $(SVGFILES) $(GEN
 # Create links for refpage aliases
 
 MAKEMANALIASES = $(SCRIPTS)/makemanaliases.py
-manaliases: $(PYAPIMAP)
+
+manhtmlaliases: $(PYAPIMAP)
 	$(PYTHON) $(MAKEMANALIASES) -genpath $(GENERATED) -refdir $(MANHTMLDIR)
+
+man3aliases: $(PYAPIMAP)
 	$(PYTHON) $(MAKEMANALIASES) -genpath $(GENERATED) -refdir $(MAN3DIR) -man3
 
 # Antora-related targets
