@@ -620,10 +620,18 @@ manhtmlpages: $(REFPATH)/apispec.adoc $(GENDEPENDS)
 	    $(ADOCREFOPTS) -d manpage -o REFPAGE.html REFPAGE.adoc
 	$(MAKE) $(SUBMAKEOPTIONS) -e buildmanpages
 
+man3pages: $(REFPATH)/apispec.adoc $(GENDEPENDS)
+	$(QUIET) echo "man3pages: building man3 refpages with these options:"
+	$(QUIET) echo $(ASCIIDOC) -b manpage $(ADOCOPTS) $(ADOCHTMLOPTS) \
+	    $(ADOCREFOPTS) -d manpage -o REFPAGE.html REFPAGE.adoc
+	$(MAKE) $(SUBMAKEOPTIONS) -e buildmanpages
+
 # Build the individual refpages, then the symbolic links from aliases
 MANHTMLDIR  = $(OUTDIR)/man/html
+MAN3DIR 	= $(OUTDIR)/man/man3
 MANHTML     = $(MANSOURCES:$(REFPATH)/%.adoc=$(MANHTMLDIR)/%.html)
-buildmanpages: $(MANHTML)
+MAN3    	= $(MANSOURCES:$(REFPATH)/%.adoc=$(MAN3DIR)/%.3)
+buildmanpages: $(MANHTML) $(MAN3)
 	$(MAKE) $(SUBMAKEOPTIONS) -e manaliases
 
 # Asciidoctor options to build refpages
@@ -650,6 +658,16 @@ $(MANHTMLDIR)/%.html: $(REFPATH)/%.adoc $(GENDEPENDS) $(KATEXINSTDIR)
 	    -d manpage -o $@ $<
 	$(VERYQUIET)if grep -q -E '\\[([]' $@ ; then \
 	    $(TRANSLATEMATH) $@ ; \
+	fi
+
+$(MAN3DIR)/%.3: KATEXDIR = ../../katex
+$(MAN3DIR)/%.3: $(REFPATH)/%.adoc $(GENDEPENDS) $(KATEXINSTDIR)
+	$(VERYQUIET)echo "Building $@ from $< using default options"
+	$(VERYQUIET)$(MKDIR) $(MAN3DIR)
+	$(VERYQUIET)$(ASCIIDOC) -b manpage $(ADOCOPTS) $(ADOCREFOPTS) \
+		-d manpage -o $@ $<
+	$(VERYQUIET)if egrep -q '\\[([]' $@ ; then \
+		$(TRANSLATEMATH) $@ ; \
 	fi
 
 # The 'manhtml' and 'manpdf' targets are NO LONGER SUPPORTED by Khronos.
@@ -683,6 +701,7 @@ $(OUTDIR)/apispec.html: $(SPECVERSION) $(REFPATH)/apispec.adoc $(SVGFILES) $(GEN
 MAKEMANALIASES = $(SCRIPTS)/makemanaliases.py
 manaliases: $(PYAPIMAP)
 	$(PYTHON) $(MAKEMANALIASES) -genpath $(GENERATED) -refdir $(MANHTMLDIR)
+	$(PYTHON) $(MAKEMANALIASES) -genpath $(GENERATED) -refdir $(MAN3DIR) -man3
 
 # Antora-related targets
 
