@@ -60,6 +60,7 @@ IMAGEOPTS = inline
 #  manhtml - HTML5 single-page reference guide - NOT SUPPORTED
 #  manpdf - PDF reference guide - NOT SUPPORTED
 #  manhtmlpages - HTML5 separate per-feature refpages
+#  man3pages - man3 separate per-feature refpages
 #  allchecks - checks for style guide compliance, XML consistency,
 #   internal link validity, and other easy to catch errors.
 
@@ -69,7 +70,7 @@ alldocs: allspecs allman proposals
 
 allspecs: html pdf styleguide registry
 
-allman: manhtmlpages
+allman: manhtmlpages man3pages
 
 # Invokes all the automated checks, but CHECK_XREFS can be set to empty
 # on the command line to avoid building an HTML spec target.
