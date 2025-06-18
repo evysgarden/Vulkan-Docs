@@ -30,9 +30,9 @@
             nodejs_24
             python3
             python3Packages.pyparsing
-            python3Packages.networkx
+            # python3Packages.networkx
             nodePackages.he
-            hexapdf
+            # hexapdf
           ];
 
           makeFlags = "man3pages";
@@ -45,7 +45,7 @@
               --replace-quiet "<strong class=\"purple\">" "\fI" \
               --replace-quiet "</strong>" "\fP" \
               --replace-quiet "C SPECIFICATION" "SYNOPSIS"
-            
+
             find gen/out/man/man3 -type f -exec sed -i 's/\.URL "\(.*\)\.html" ".*" ".*"/\\fB\1\\fP/g' '{}' \;
           '';
 
