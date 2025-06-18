@@ -44,6 +44,9 @@
               --replace-quiet "<strong>" "\fI" \
               --replace-quiet "<strong class=\"purple\">" "\fI" \
               --replace-quiet "</strong>" "\fP" \
+              --replace-quiet "C SPECIFICATION" "SYNOPSIS"
+            
+            find gen/out/man/man3 -type f -exec sed -i 's/\.URL "\(.*\)\.html" ".*" ".*"/\\fB\1\\fP/g' '{}' \;
           '';
 
           installPhase = ''
