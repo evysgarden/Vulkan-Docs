@@ -30,12 +30,19 @@
             nodejs_24
             python3
             python3Packages.pyparsing
-            # python3Packages.networkx
             nodePackages.he
-            # hexapdf
+            hexapdf
           ];
 
-          makeFlags = "man3pages";
+          postPatch = ''
+            substituteInPlace Makefile \
+              --replace-quiet "KATEXDIR =" "KATEXDIR = ${pkgs.nodePackages.katex}/lib/node_modules/katex/dist #"
+            
+            substituteInPlace config/katex_replace/extension.rb \
+              --replace-warn "../katex/" "${pkgs.nodePackages.katex}/lib/node_modules/katex/dist/"
+          '';
+
+          makeFlags = "alldocs";
 
           postBuild = ''
             substituteInPlace gen/out/man/man3/* \
@@ -52,7 +59,8 @@
           installPhase = ''
             runHook preInstall
             mkdir -p $out/share/
-            cp -rv gen/out/man $out/share/man
+            cp -rv gen/out $out/share/doc
+            ln -s doc/man man
             runHook postInstall
           '';
         };
