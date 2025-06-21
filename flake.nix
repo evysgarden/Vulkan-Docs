@@ -42,7 +42,11 @@
               --replace-warn "../katex/" "${pkgs.nodePackages.katex}/lib/node_modules/katex/dist/"
           '';
 
-          makeFlags = "alldocs";
+          preBuild = ''
+            makeFlagsArray+=(EXTENSIONS="$(python3 all-extensions.py)")
+          '';
+
+          makeFlags = "man3pages";
 
           postBuild = ''
             substituteInPlace gen/out/man/man3/* \
